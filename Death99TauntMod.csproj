@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>Death99TauntMod</AssemblyName>
+    <Description>当死亡99次时自动打开浏览器嘲讽的ADOFAI mod</Description>
+    <Version>1.0.0</Version>
+    <LangVersion>latest</LangVersion>
+    <GameDir>F:\SteamLibrary\steamapps\common\A Dance of Fire and Ice</GameDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 移除HarmonyX包引用，使用游戏自带的 -->
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Unity Mod Manager 和游戏程序集引用 -->
+  <ItemGroup>
+    <Reference Include="UnityModManager">
+      <HintPath>$(GameDir)\A Dance of Fire and Ice_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameDir)\A Dance of Fire and Ice_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameDir)\A Dance of Fire and Ice_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameDir)\A Dance of Fire and Ice_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(GameDir)\A Dance of Fire and Ice_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 构建后自动复制到Mods文件夹 -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if exist &quot;$(GameDir)\Mods\Death99TauntMod&quot; (&#xD;&#xA;  xcopy /Y &quot;$(TargetPath)&quot; &quot;$(GameDir)\Mods\Death99TauntMod\&quot;&#xD;&#xA;  xcopy /Y &quot;$(ProjectDir)Info.json&quot; &quot;$(GameDir)\Mods\Death99TauntMod\&quot;&#xD;&#xA;)" />
+  </Target>
+
+</Project>
