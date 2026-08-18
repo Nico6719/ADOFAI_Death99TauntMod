@@ -434,6 +434,7 @@ namespace Death99TauntMod
 
             GUILayout.Space(10);
             GUILayout.Label("提示：当你在谱面完成度>=设定值时死亡，将自动打开浏览器嘲讽你！", GUILayout.ExpandWidth(false));
+            GUILayout.Label("支持格式：网页URL (https://...) 或本地文件路径 (C:\\Videos\\taunt.mp4)", GUILayout.ExpandWidth(false));
 
             GUILayout.EndVertical();
         }
@@ -444,21 +445,51 @@ namespace Death99TauntMod
             settings.Save(modEntry);
         }
 
-        // 打开浏览器
+        // 打开浏览器或本地文件
         static void OpenBrowser(string url)
         {
             try
             {
+                // 检查是否为本地文件路径
+                bool isLocalFile = false;
+                if (System.IO.File.Exists(url))
+                {
+                    isLocalFile = true;
+                    Logger.Log($"检测到本地文件: {url}");
+                }
+                else if (url.StartsWith("file://", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    isLocalFile = true;
+                    Logger.Log($"检测到file://协议: {url}");
+                }
+                else if (System.Text.RegularExpressions.Regex.IsMatch(url, @"^[a-zA-Z]:\\"))
+                {
+                    // Windows绝对路径 (C:\, D:\, etc.)
+                    if (System.IO.File.Exists(url))
+                    {
+                        isLocalFile = true;
+                        Logger.Log($"检测到Windows绝对路径: {url}");
+                    }
+                }
+
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = url,
                     UseShellExecute = true
                 });
-                Logger.Log($"成功打开浏览器: {url}");
+
+                if (isLocalFile)
+                {
+                    Logger.Log($"成功打开本地文件: {url}");
+                }
+                else
+                {
+                    Logger.Log($"成功打开浏览器: {url}");
+                }
             }
             catch (System.Exception ex)
             {
-                Logger.Error($"打开浏览器失败: {ex.Message}");
+                Logger.Error($"打开失败: {ex.Message}");
             }
         }
     }

@@ -4,7 +4,7 @@ echo 打包 Death99TauntMod
 echo ====================================
 
 set MOD_NAME=Death99TauntMod
-set BUILD_DIR=bin\Release\net35
+set BUILD_DIR=bin\Release\net48
 set RELEASE_DIR=Release
 
 echo.
